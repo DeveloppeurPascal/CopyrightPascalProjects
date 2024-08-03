@@ -4,13 +4,11 @@
 
 Ce programme est destiné aux développeurs en langage Pascal désireux d'ajouter un commentaire de copyright et de version en entête de leurs fichiers sources (*.pas, *.dpr, *.dpk, *.lpr, ...).
 
-Les commentaires seront mis en début de fichier source avant le démarrage standard du contenu du fichier. Ils sont au format [XML Documentation](https://docwiki.embarcadero.com/RADStudio/fr/Commentaires_de_documentation_XML) avec :
+Les commentaires seront mis en début de fichier source avant le démarrage standard du contenu du fichier. Ils sont au format [XML Documentation](https://docwiki.embarcadero.com/RADStudio/fr/Commentaires_de_documentation_XML) avec tag SUMMMARY contenant les éléments saisis dans le projet : une description, un copyright, la liste des auteurs, les liens vers le dépôt de code et vers le site du projet (s'ils sont précisés).
 
-* un <summary> expliquant à quoi correspond le projet ou le fichier, 
-* un <remarks> contenant les informations de licence et de copyright,
-* des <see> (dans <remarks>) pour les liens vers le dépôt de code et vers le site du projet (s'ils sont précisés).
+Ces commentaires sont compatibles avec Delphi. Ils ne poseront pas de problème dans les autres compilateurs, interpréteurs et éditeurs.
 
-Ces commentaires sont pris en charge dans Delphi. Ils ne poseront pas de problème dans les autres compilateurs, interpréteurs et éditeurs.
+!!! FAITES DES SAUVEGARDES AVANT UTILISATION DE CE PROJET SUR VOS CODES SOURCES OU TRAITEZ VOS COMMITs AVANT DE METTRE A JOUR LES INFOS D'ENTETE !!!
 
 Ce dépôt de code contient un projet développé en langage Pascal Objet sous Delphi. Vous ne savez pas ce qu'est Dephi ni où le télécharger ? Vous en saurez plus [sur ce site web](https://delphi-resources.developpeur-pascal.fr/).
 
