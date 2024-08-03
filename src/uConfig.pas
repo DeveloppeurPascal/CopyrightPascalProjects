@@ -9,12 +9,16 @@ type
     class procedure SetDefaultSummary(const Value: string); static;
     class function GetDefaultCopyright: string; static;
     class function GetDefaultSummary: string; static;
+    class function GetDefaultPascalProjectFolder: string; static;
+    class procedure SetDefaultPascalProjectFolder(const Value: string); static;
   protected
   public
     class property DefaultSummary: string read GetDefaultSummary
       write SetDefaultSummary;
     class property DefaultCopyright: string read GetDefaultCopyright
       write SetDefaultCopyright;
+    class property DefaultPascalProjectFolder: string
+      read GetDefaultPascalProjectFolder write SetDefaultPascalProjectFolder;
     class procedure Save;
     class procedure Cancel;
   end;
@@ -27,6 +31,7 @@ uses
   System.Types,
 {$ENDIF}
   System.IOUtils,
+  System.SysUtils,
   Olf.RTL.Params,
   Olf.RTL.CryptDecrypt;
 
@@ -89,6 +94,20 @@ begin
   result := tparams.getValue('DC', '');
 end;
 
+class function TConfig.GetDefaultPascalProjectFolder: string;
+var
+  LDefaultDelphiProjectsFolder: string;
+begin
+  result := tparams.getValue('DPF', '');
+  if result.IsEmpty then
+  begin
+    LDefaultDelphiProjectsFolder := tpath.Combine(tpath.GetDocumentsPath,
+      'Embarcadero', 'Studio', 'Projets');
+    if TDirectory.Exists(LDefaultDelphiProjectsFolder) then
+      result := LDefaultDelphiProjectsFolder;
+  end;
+end;
+
 class function TConfig.GetDefaultSummary: string;
 begin
   result := tparams.getValue('DS', '');
@@ -102,6 +121,11 @@ end;
 class procedure TConfig.SetDefaultCopyright(const Value: string);
 begin
   tparams.setValue('DC', Value);
+end;
+
+class procedure TConfig.SetDefaultPascalProjectFolder(const Value: string);
+begin
+  tparams.setValue('DPF', Value);
 end;
 
 class procedure TConfig.SetDefaultSummary(const Value: string);
