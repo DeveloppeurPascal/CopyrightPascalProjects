@@ -8,7 +8,7 @@ uses
   System.Generics.Collections;
 
 const
-  CProjectFileVersion = 20240802;
+  CProjectFileVersion = 20240803;
 
 type
   TC2PPProject = class;
@@ -30,6 +30,8 @@ type
     FDescription: string;
     FCopyright: string;
     FSiteURL: string;
+    FPascalProjectFolder: string;
+    procedure SetPascalProjectFolder(const Value: string);
     procedure SetAuthor(const Value: string);
     procedure SetCopyright(const Value: string);
     procedure SetDescription(const Value: string);
@@ -39,14 +41,43 @@ type
     procedure SetHasChanged(const Value: boolean);
   protected
   public
+    /// <summary>
+    /// Return True if a property value has changed since last Save() or Load().
+    /// </summary>
     property HasChanged: boolean read FHasChanged write SetHasChanged;
+    /// <summary>
+    /// Return the C2PP project file path
+    /// </summary>
     property FilePath: string read FFilePath;
+    /// <summary>
+    /// Return the C2PP project filename
+    /// </summary>
     property FileName: string read GetFileName;
+    /// <summary>
+    /// Used as a SUMMARY tag in exported comments
+    /// </summary>
     property Description: string read FDescription write SetDescription;
+    /// <summary>
+    /// Used as a REMARKS tag in exported comments
+    /// </summary>
     property Copyright: string read FCopyright write SetCopyright;
+    /// <summary>
+    /// Used in the generated REMARKS comment
+    /// </summary>
     property Author: string read FAuthor write SetAuthor;
+    /// <summary>
+    /// Used in the generated REMARKS comment
+    /// </summary>
     property SiteURL: string read FSiteURL write SetSiteURL;
+    /// <summary>
+    /// Used in the generated REMARKS comment
+    /// </summary>
     property ProjectURL: string read FProjectURL write SetProjectURL;
+    /// <summary>
+    /// Pascal project path (where we look for .pas/.dpr.lpr files to update)
+    /// </summary>
+    property PascalProjectFolder: string read FPascalProjectFolder
+      write SetPascalProjectFolder;
     // TODO : add included/excluded folders
     // TODO : add included/excluded files
     procedure LoadFromFile(const AFilePath: string = '');
@@ -81,6 +112,7 @@ begin
   FDescription := '';
   FCopyright := '';
   FSiteURL := '';
+  FPascalProjectFolder := '';
 end;
 
 function TC2PPProject.Clone: TC2PPProject;
@@ -172,6 +204,7 @@ begin
     FDescription := LoadStringFromStream(AStream);
     FProjectURL := LoadStringFromStream(AStream);
     FSiteURL := LoadStringFromStream(AStream);
+    FPascalProjectFolder := LoadStringFromStream(AStream);
 
   finally
     FIsLoading := false;
@@ -213,6 +246,7 @@ begin
   SaveStringToStream(FDescription, AStream);
   SaveStringToStream(FProjectURL, AStream);
   SaveStringToStream(FSiteURL, AStream);
+  SaveStringToStream(FPascalProjectFolder, AStream);
 
   if not FIsCloning then
     HasChanged := false;
@@ -260,6 +294,15 @@ begin
         TMessageManager.DefaultManager.SendMessage(self,
           TC2PPProjectHasChangedMessage.Create(self));
       end);
+  end;
+end;
+
+procedure TC2PPProject.SetPascalProjectFolder(const Value: string);
+begin
+  if FPascalProjectFolder <> Value then
+  begin
+    FPascalProjectFolder := Value;
+    HasChanged := true;
   end;
 end;
 
