@@ -17,7 +17,7 @@ object frmOptions: TfrmOptions
     Size.Height = 490.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    Viewport.Width = 640.000000000000000000
+    Viewport.Width = 624.000000000000000000
     Viewport.Height = 490.000000000000000000
     object lblDefaultSummary: TLabel
       Align = Top
@@ -26,12 +26,12 @@ object frmOptions: TfrmOptions
       Margins.Top = 10.000000000000000000
       Margins.Right = 10.000000000000000000
       Position.X = 10.000000000000000000
-      Position.Y = 10.000000000000000000
-      Size.Width = 620.000000000000000000
+      Position.Y = 316.000000000000000000
+      Size.Width = 604.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       Text = 'Default description'
-      TabOrder = 0
+      TabOrder = 4
     end
     object lblDefaultCopyright: TLabel
       Align = Top
@@ -40,8 +40,8 @@ object frmOptions: TfrmOptions
       Margins.Top = 10.000000000000000000
       Margins.Right = 10.000000000000000000
       Position.X = 10.000000000000000000
-      Position.Y = 252.000000000000000000
-      Size.Width = 620.000000000000000000
+      Position.Y = 74.000000000000000000
+      Size.Width = 604.000000000000000000
       Size.Height = 17.000000000000000000
       Size.PlatformDefault = False
       Text = 'Default copyright'
@@ -57,12 +57,12 @@ object frmOptions: TfrmOptions
       Margins.Right = 10.000000000000000000
       Margins.Bottom = 10.000000000000000000
       Position.X = 10.000000000000000000
-      Position.Y = 32.000000000000000000
-      Size.Width = 620.000000000000000000
+      Position.Y = 338.000000000000000000
+      Size.Width = 604.000000000000000000
       Size.Height = 200.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 1
-      Viewport.Width = 616.000000000000000000
+      TabOrder = 5
+      Viewport.Width = 600.000000000000000000
       Viewport.Height = 196.000000000000000000
     end
     object mmoDefaultCopyright: TMemo
@@ -75,13 +75,53 @@ object frmOptions: TfrmOptions
       Margins.Right = 10.000000000000000000
       Margins.Bottom = 10.000000000000000000
       Position.X = 10.000000000000000000
-      Position.Y = 274.000000000000000000
-      Size.Width = 620.000000000000000000
+      Position.Y = 96.000000000000000000
+      Size.Width = 604.000000000000000000
       Size.Height = 200.000000000000000000
       Size.PlatformDefault = False
       TabOrder = 3
-      Viewport.Width = 616.000000000000000000
+      Viewport.Width = 600.000000000000000000
       Viewport.Height = 196.000000000000000000
+    end
+    object lblDefaultPascalProjectFolder: TLabel
+      Align = Top
+      FocusControl = edtDefaultPascalProjectFolder
+      Margins.Left = 10.000000000000000000
+      Margins.Top = 10.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Position.X = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 604.000000000000000000
+      Size.Height = 17.000000000000000000
+      Size.PlatformDefault = False
+      Text = 'Default Pascal projects folder'
+      TabOrder = 0
+    end
+    object edtDefaultPascalProjectFolder: TEdit
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Top
+      TabOrder = 1
+      ReadOnly = True
+      Position.X = 10.000000000000000000
+      Position.Y = 32.000000000000000000
+      Margins.Left = 10.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Margins.Bottom = 10.000000000000000000
+      Size.Width = 604.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      object btnDefaultPascalProjectFolderSelect: TEllipsesEditButton
+        Touch.InteractiveGestures = [LongTap]
+        CanFocus = False
+        Cursor = crArrow
+        TextSettings.Trimming = None
+        Size.Width = 28.000000000000000000
+        Size.Height = 18.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        OnClick = btnDefaultPascalProjectFolderSelectClick
+      end
     end
   end
   object GridPanelLayout1: TGridPanelLayout
@@ -148,5 +188,10 @@ object frmOptions: TfrmOptions
       TextSettings.Trimming = None
       OnClick = btnCancelClick
     end
+  end
+  object OlfSelectDirectoryDialog1: TOlfSelectDirectoryDialog
+    Root = ''
+    Left = 304
+    Top = 264
   end
 end
