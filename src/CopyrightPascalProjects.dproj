@@ -319,6 +319,8 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.1;InternalName=;LegalCopyright=2024 Patrick Prémartin;LegalTrademarks=;OriginalFilename=;ProgramID=fr.olfsoftware.copyrightpascalprojects;ProductName=$(MSBuildProjectName);ProductVersion=1.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -356,10 +358,6 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="..\lib-externes\AboutDialog-Delphi-Component\src\Olf.FMX.AboutDialog.pas"/>
-        <DCCReference Include="..\lib-externes\AboutDialog-Delphi-Component\src\Olf.FMX.AboutDialogForm.pas">
-            <Form>OlfAboutDialogForm</Form>
-            <FormType>fmx</FormType>
-        </DCCReference>
         <DCCReference Include="..\lib-externes\librairies\src\Olf.RTL.CryptDecrypt.pas"/>
         <DCCReference Include="..\lib-externes\librairies\src\Olf.RTL.Params.pas"/>
         <DCCReference Include="..\lib-externes\librairies\src\u_urlOpen.pas"/>
@@ -374,6 +372,10 @@
         <DCCReference Include="..\lib-externes\Delphi-FMXExtend-Library\src\Olf.FMX.SelectDirectory.pas"/>
         <DCCReference Include="..\lib-externes\librairies\src\Olf.RTL.Streams.pas"/>
         <DCCReference Include="..\lib-externes\librairies\src\Olf.RTL.Maths.Conversions.pas"/>
+        <DCCReference Include="..\lib-externes\AboutDialog-Delphi-Component\src\Olf.FMX.AboutDialogForm.pas">
+            <Form>OlfAboutDialogForm</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1405,11 +1407,9 @@
             <Platforms>
                 <Platform value="Android">False</Platform>
                 <Platform value="Android64">False</Platform>
-                <Platform value="iOSDevice32">False</Platform>
                 <Platform value="iOSDevice64">False</Platform>
                 <Platform value="iOSSimARM64">False</Platform>
                 <Platform value="Linux64">True</Platform>
-                <Platform value="OSX32">False</Platform>
                 <Platform value="OSX64">True</Platform>
                 <Platform value="OSXARM64">True</Platform>
                 <Platform value="Win32">True</Platform>
