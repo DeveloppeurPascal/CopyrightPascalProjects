@@ -24,13 +24,13 @@
 /// ***************************************************************************
 ///
 /// Author(s) :
-///      Patrick PREMARTIN
+/// Patrick PREMARTIN
 ///
 /// Site :
-///      https://copyrightpascalprojects.olfsoftware.fr/
+/// https://copyrightpascalprojects.olfsoftware.fr/
 ///
 /// Project site :
-///      https://github.com/DeveloppeurPascal/CopyrightPascalProjects
+/// https://github.com/DeveloppeurPascal/CopyrightPascalProjects
 ///
 /// ***************************************************************************
 /// File last update : 03/08/2024 16:04:56
@@ -525,19 +525,19 @@ begin
         AddTo(DestFile, '///');
         AddTo(DestFile, '/// Author(s) :');
         // TODO : traiter le cas de plusieurs ou un seul auteurs
-        AddTo(DestFile, '///      ' + CurrentProject.Author);
+        AddTo(DestFile, '/// ' + CurrentProject.Author);
       end;
       if (not CurrentProject.SiteURL.IsEmpty) then
       begin
         AddTo(DestFile, '///');
         AddTo(DestFile, '/// Site :');
-        AddTo(DestFile, '///      ' + CurrentProject.SiteURL);
+        AddTo(DestFile, '/// ' + CurrentProject.SiteURL);
       end;
       if (not CurrentProject.ProjectURL.IsEmpty) then
       begin
         AddTo(DestFile, '///');
         AddTo(DestFile, '/// Project site :');
-        AddTo(DestFile, '///      ' + CurrentProject.ProjectURL);
+        AddTo(DestFile, '/// ' + CurrentProject.ProjectURL);
       end;
       AddTo(DestFile, '///');
     end;
