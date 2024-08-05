@@ -33,8 +33,8 @@
 /// https://github.com/DeveloppeurPascal/CopyrightPascalProjects
 ///
 /// ***************************************************************************
-/// File last update : 03/08/2024 16:04:56
-/// Signature : c3215d962b300523d80379e07bcf0012098676dc
+/// File last update : 2024-08-05T15:06:02.000+02:00
+/// Signature : f2e6dc0a979204cac70db2d20d8a174d4a3fae19
 /// ***************************************************************************
 /// </summary>
 
@@ -166,6 +166,7 @@ implementation
 {$R *.fmx}
 
 uses
+  System.DateUtils,
   System.Hash,
   FMX.DialogService,
   System.IOUtils,
@@ -542,7 +543,8 @@ begin
       AddTo(DestFile, '///');
     end;
     AddTo(DestFile, '/// ' + Space(75, '*'));
-    AddTo(DestFile, '/// File last update : ' + datetimetostr(LastWriteTime));
+    AddTo(DestFile, '/// File last update : ' +
+      DateToISO8601(LastWriteTime, false));
     AddTo(DestFile, '/// Signature : ' + NewSignature);
     AddTo(DestFile, '/// ' + Space(75, '*'));
     AddTo(DestFile, '/// </summary>');
