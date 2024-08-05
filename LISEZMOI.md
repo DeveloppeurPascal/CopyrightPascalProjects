@@ -24,11 +24,11 @@ Ce logiciel est disponible dans une version de production directement installabl
 
 Vous pouvez le télécharger et le rediffuser gratuitement à condition de ne pas en modifier le contenu (installeur, programme, fichiers annexes, ...).
 
-[Télécharger le programme ou son installeur](https://olfsoftware.lemonsqueezy.com/buy/3a1b9d29-4585-4426-900e-10a490e657e4) (WIP)
+[Télécharger le programme ou son installeur](https://olfsoftware.lemonsqueezy.com/buy/3a1b9d29-4585-4426-900e-10a490e657e4)
 
 Si vous utilisez régulièrement ce logiciel et en êtes satisfait vous êtes invité à en acheter une licence d'utilisateur final. L'achat d'une licence vous donnera accès aux mises à jour du logiciel en plus d'activer d'évenuelles fonctionnalités optionnelles.
 
-[Acheter une licence](https://olfsoftware.lemonsqueezy.com/buy/94ea0082-c6ff-4a4a-9759-a5c86b37e59c) (WIP)
+[Acheter une licence](https://olfsoftware.lemonsqueezy.com/buy/94ea0082-c6ff-4a4a-9759-a5c86b37e59c)
 
 Vous pouvez aussi [consulter le site du logiciel](https://copyrightpascalprojects.olfsoftware.fr/) pour en savoir plus sur son fonctionnement, accéder à des vidéos et articles, connaître les différentes versions disponibles et leurs fonctionnalités, contacter le support utilisateurs...
 
