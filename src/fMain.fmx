@@ -365,8 +365,8 @@ object frmMain: TfrmMain
   end
   object OlfAboutDialog1: TOlfAboutDialog
     Titre = 'Copyright Pascal Projects'
-    VersionNumero = '0.1b'
-    VersionDate = '20240803'
+    VersionNumero = '0.2b'
+    VersionDate = '20240805'
     MultiResBitmap = <
       item
       end>
