@@ -1585,6 +1585,10 @@
                                                   <param name="Local" value="fMain.TfrmMain.AddCommentsToFolder.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="DoProjectApply">
+                                                  <param name="Local" value="fMain.TfrmMain.DoProjectApply.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="FormCloseQuery">
                                                   <param name="Local" value="fMain.TfrmMain.FormCloseQuery.html">
                                                   </OBJECT>
@@ -1617,6 +1621,14 @@
                                                   <param name="Local" value="fMain.TfrmMain.actOptionsExecute.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="actProjectApplyOnAllFilesExecute">
+                                                  <param name="Local" value="fMain.TfrmMain.actProjectApplyOnAllFilesExecute.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="actProjectApplyOnChangedFilesExecute">
+                                                  <param name="Local" value="fMain.TfrmMain.actProjectApplyOnChangedFilesExecute.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectCloseExecute">
                                                   <param name="Local" value="fMain.TfrmMain.actProjectCloseExecute.html">
                                                   </OBJECT>
@@ -1627,10 +1639,6 @@
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectOpenExecute">
                                                   <param name="Local" value="fMain.TfrmMain.actProjectOpenExecute.html">
-                                                  </OBJECT>
-                                              <LI> <OBJECT type="text/sitemap">
-                                                  <param name="Name" value="actProjectRunExecute">
-                                                  <param name="Local" value="fMain.TfrmMain.actProjectRunExecute.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectSaveExecute">
@@ -1710,6 +1718,14 @@
                                                   <param name="Local" value="fMain.TfrmMain.actOptions.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="actProjectApplyOnAllFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.actProjectApplyOnAllFiles.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="actProjectApplyOnChangedFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.actProjectApplyOnChangedFiles.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectClose">
                                                   <param name="Local" value="fMain.TfrmMain.actProjectClose.html">
                                                   </OBJECT>
@@ -1720,10 +1736,6 @@
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectOpen">
                                                   <param name="Local" value="fMain.TfrmMain.actProjectOpen.html">
-                                                  </OBJECT>
-                                              <LI> <OBJECT type="text/sitemap">
-                                                  <param name="Name" value="actProjectRun">
-                                                  <param name="Local" value="fMain.TfrmMain.actProjectRun.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="actProjectSave">
@@ -1762,8 +1774,12 @@
                                                   <param name="Local" value="fMain.TfrmMain.btnProjectOpen.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
-                                                  <param name="Name" value="btnProjectRun">
-                                                  <param name="Local" value="fMain.TfrmMain.btnProjectRun.html">
+                                                  <param name="Name" value="btnProjectRunOnAllFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.btnProjectRunOnAllFiles.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="btnProjectRunOnUpdatedFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.btnProjectRunOnUpdatedFiles.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="btnQuit">
@@ -1870,8 +1886,12 @@
                                                   <param name="Local" value="fMain.TfrmMain.mnuProject.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
-                                                  <param name="Name" value="mnuProjectRun">
-                                                  <param name="Local" value="fMain.TfrmMain.mnuProjectRun.html">
+                                                  <param name="Name" value="mnuProjectApplyOnAllFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.mnuProjectApplyOnAllFiles.html">
+                                                  </OBJECT>
+                                              <LI> <OBJECT type="text/sitemap">
+                                                  <param name="Name" value="mnuProjectApplyOnChangedFiles">
+                                                  <param name="Local" value="fMain.TfrmMain.mnuProjectApplyOnChangedFiles.html">
                                                   </OBJECT>
                                               <LI> <OBJECT type="text/sitemap">
                                                   <param name="Name" value="mnuTools">
