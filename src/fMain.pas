@@ -260,7 +260,7 @@ begin
   // TODO : faire le traitement en batch pour ne pas bloquer l'écran pendant qu'il tourne
 
   // TODO : proposer éventuellement d'enregistrer les données du projet ouvert
-  // TODO : ajouter une demande de confiramtion d'écrasement des fichier de destination (rappel qu'il n'y a pas de retour en arrière sauf backup ou VCS pour Version Control System)
+  // TODO : ajouter une demande de confirmation d'écrasement des fichier de destination (rappel qu'il n'y a pas de retour en arrière sauf backup ou VCS pour Version Control System)
 
   mmoLog.Visible := true; // TODO : à conditionner dans les options du programme
   mmoLog.lines.clear;
