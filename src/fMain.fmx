@@ -381,8 +381,8 @@ object frmMain: TfrmMain
   end
   object OlfAboutDialog1: TOlfAboutDialog
     Titre = 'Copyright Pascal Projects'
-    VersionNumero = '0.2b'
-    VersionDate = '20240805'
+    VersionNumero = '0.3b'
+    VersionDate = '20250525'
     MultiResBitmap = <
       item
       end>
@@ -390,7 +390,7 @@ object frmMain: TfrmMain
     ImageIndex = 0
     URL = 'https://copyrightpascalprojects.olfsoftware.fr/'
     onURLClick = OlfAboutDialog1URLClick
-    Copyright = '2024 Patrick Pr'#233'martin'
+    Copyright = '2024-2025 Patrick Pr'#233'martin'
     onGetText = OlfAboutDialog1GetText
     ReplaceMainFormCaption = True
     Left = 304
