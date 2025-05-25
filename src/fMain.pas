@@ -33,8 +33,8 @@
 /// https://github.com/DeveloppeurPascal/CopyrightPascalProjects
 ///
 /// ***************************************************************************
-/// File last update : 2025-05-25T15:00:04.000+02:00
-/// Signature : 8b6ae749c2a18b889d1b22f2ff6658355b04fdf2
+/// File last update : 2025-05-25T15:41:00.000+02:00
+/// Signature : a1d68a987e9e6b7a5aeae18feb81e628eac870d1
 /// ***************************************************************************
 /// </summary>
 
@@ -201,7 +201,14 @@ end;
 
 procedure TfrmMain.actProjectApplyOnAllFilesExecute(Sender: TObject);
 begin
-  DoProjectApply(true);
+  TDialogService.MessageDialog
+    ('This program will change existing Pascal files and could erase parts of them. No UNDO is available. Are you sure you want to process ?',
+    tmsgdlgtype.mtWarning, mbyesno, tmsgdlgbtn.mbYes, 0,
+    procedure(const AModalResult: TModalResult)
+    begin
+      if AModalResult = mryes then
+        DoProjectApply(true);
+    end);
 end;
 
 procedure TfrmMain.actProjectCloseExecute(Sender: TObject);
@@ -238,7 +245,14 @@ end;
 
 procedure TfrmMain.actProjectApplyOnChangedFilesExecute(Sender: TObject);
 begin
-  DoProjectApply(false);
+  TDialogService.MessageDialog
+    ('This program will change existing Pascal files and could erase parts of them. No UNDO is available. Are you sure you want to process ?',
+    tmsgdlgtype.mtWarning, mbyesno, tmsgdlgbtn.mbYes, 0,
+    procedure(const AModalResult: TModalResult)
+    begin
+      if AModalResult = mryes then
+        DoProjectApply(false);
+    end);
 end;
 
 procedure TfrmMain.actProjectNewExecute(Sender: TObject);
@@ -440,45 +454,38 @@ begin
     end;
   end;
 
+  // => recherche et récupération de la signature existante
 
-  // TODO :
-  // - détecter le début du bloc de commentaire
-  // - chercher la signature dedans
-  // - détecter la fin du bloc de commentaire
-  // - si pas de signature chercher le bloc suivant
-  // - si pas de signature dans un bloc de commentaire v0.3b, chercher le premier bloc XMLDoc du fichier
-  // - remplacer "FirstSourceLineIndex" par un début et une fin de bloc de signature
+  PrevSignature := '';
 
-  // => recherche et récupération de la signature existante dans l'ancien style
-  // de commentaires (XMLDoc avant l v0.3b du 25/05/2025)
-
+  // => check the signature in the new comments (since v0.3b - 25/05/2025)
   C2PPCommentStartLine := -1;
   C2PPCommentLastLine := -1;
   C2PPCommentValid := false;
   FirstFound := false;
-
-  PrevSignature := '';
-  i := 0;
   BreakLoop := false;
+  i := 0;
   while (i < length(SourceFile)) and (not BreakLoop) do
   begin
     Line := SourceFile[i].Trim;
 
-    if Line.StartsWith('///') then
-      if (C2PPCommentStartLine < 0) and Line.Contains('<summary>') then
-      begin // First line of a XMLDoc comment
-        C2PPCommentStartLine := i;
-        C2PPCommentLastLine := -1;
-        C2PPCommentValid := false;
-        FirstFound := true;
-      end
-      else if (C2PPCommentStartLine >= 0) and Line.Contains('</summary>') then
-      begin // Last line of a XMLDoc comment
+    if Line.StartsWith('(*') and (C2PPCommentStartLine < 0) and
+      (Line.ToLower.Contains('c2pp') or ((i + 1 < length(SourceFile)) and
+      (SourceFile[i + 1].ToLower.Contains('c2pp')))) then
+    begin // First line of a C2PP comment
+      C2PPCommentStartLine := i;
+      C2PPCommentLastLine := -1;
+      C2PPCommentValid := false;
+      FirstFound := true;
+    end
+    else if (C2PPCommentStartLine >= 0) then
+      if Line.EndsWith('*)') then
+      begin // Last line of a C2PP comment
         C2PPCommentLastLine := i;
         BreakLoop := C2PPCommentValid or FirstFound;
       end
       else
-      begin // In a XMLDoc comment
+      begin // In a C2PP comment
         idx := SourceFile[i].IndexOf('Signature : ');
         if (idx >= 0) then
         begin
@@ -486,20 +493,71 @@ begin
           C2PPCommentValid := true;
         end;
       end
-    else if not Line.IsEmpty then
+    else if (not Line.IsEmpty) and (not Line.StartsWith('///')) then
       BreakLoop := true;
 
     inc(i);
   end;
 
+  // Error : a comment have a start but no end
   if (C2PPCommentStartLine > C2PPCommentLastLine) then
     raise Exception.Create('Missing the end of a first comment in "' +
       FileName + '".');
 
+  // => check the signature in the old comments using XMLDoc
+  // (before v0.3b du 25/05/2025)
   if not C2PPCommentValid then
   begin
     C2PPCommentStartLine := -1;
     C2PPCommentLastLine := -1;
+    C2PPCommentValid := false;
+    FirstFound := false;
+    BreakLoop := false;
+    i := 0;
+    while (i < length(SourceFile)) and (not BreakLoop) do
+    begin
+      Line := SourceFile[i].Trim;
+
+      if Line.StartsWith('///') then
+        if (C2PPCommentStartLine < 0) and Line.Contains('<summary>') then
+        begin // First line of a XMLDoc comment
+          C2PPCommentStartLine := i;
+          C2PPCommentLastLine := -1;
+          C2PPCommentValid := false;
+          FirstFound := true;
+        end
+        else if (C2PPCommentStartLine >= 0) and Line.Contains('</summary>') then
+        begin // Last line of a XMLDoc comment
+          C2PPCommentLastLine := i;
+          BreakLoop := C2PPCommentValid or FirstFound;
+        end
+        else
+        begin // In a XMLDoc comment
+          idx := SourceFile[i].IndexOf('Signature : ');
+          if (idx >= 0) then
+          begin
+            PrevSignature := SourceFile[i].Substring
+              (idx + 'Signature : '.length);
+            C2PPCommentValid := true;
+          end;
+        end
+      else if not Line.IsEmpty then
+        BreakLoop := true;
+
+      inc(i);
+    end;
+
+    // Error : a comment have a start but no end
+    if (C2PPCommentStartLine > C2PPCommentLastLine) then
+      raise Exception.Create('Missing the end of a first comment in "' +
+        FileName + '".');
+
+    // Error : first comment doesn't contains a valid C2PP signature
+    if not C2PPCommentValid then
+    begin
+      C2PPCommentStartLine := -1;
+      C2PPCommentLastLine := -1;
+    end;
   end;
 
   // => calculer la nouvelle signature une fois le bloc de commentaire en entête supprimé
