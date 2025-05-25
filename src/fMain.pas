@@ -33,8 +33,8 @@
 /// https://github.com/DeveloppeurPascal/CopyrightPascalProjects
 ///
 /// ***************************************************************************
-/// File last update : 2025-05-25T10:23:42.000+02:00
-/// Signature : 8eb31116afb832e0887d13ce5200c0756d4c024b
+/// File last update : 2025-05-25T15:00:04.000+02:00
+/// Signature : 8b6ae749c2a18b889d1b22f2ff6658355b04fdf2
 /// ***************************************************************************
 /// </summary>
 
@@ -366,12 +366,12 @@ const Force: Boolean);
       try
         for i := 0 to sl.Count - 1 do
           if (sl[i].length < 75) then
-            AddTo(Tab, '/// ' + sl[i].TrimRight)
+            AddTo(Tab, '  ' + sl[i].TrimRight)
           else
           begin
             slWrap.Text := wraptext(sl[i], 75);
             for j := 0 to slWrap.Count - 1 do
-              AddTo(Tab, '/// ' + slWrap[j].TrimRight)
+              AddTo(Tab, '  ' + slWrap[j].TrimRight)
           end;
       finally
         slWrap.free;
@@ -396,8 +396,12 @@ var
   SourceFile, DestFile: TStringDynArray;
   PrevSignature, NewSignature: string;
   i, idx: int64;
-  FirstSourceLineIndex: int64;
+  C2PPCommentStartLine, C2PPCommentLastLine: int64;
+  C2PPCommentValid: Boolean;
+  FirstFound: Boolean;
   Encoding: TEncoding;
+  Line: string;
+  BreakLoop: Boolean;
 begin
   if AFilePath.IsEmpty then
     exit;
@@ -436,90 +440,144 @@ begin
     end;
   end;
 
-  // => récupérer la signature existante
-  i := 0;
-  while (i < length(SourceFile)) and SourceFile[i].trim.IsEmpty do
-    inc(i);
+
+  // TODO :
+  // - détecter le début du bloc de commentaire
+  // - chercher la signature dedans
+  // - détecter la fin du bloc de commentaire
+  // - si pas de signature chercher le bloc suivant
+  // - si pas de signature dans un bloc de commentaire v0.3b, chercher le premier bloc XMLDoc du fichier
+  // - remplacer "FirstSourceLineIndex" par un début et une fin de bloc de signature
+
+  // => recherche et récupération de la signature existante dans l'ancien style
+  // de commentaires (XMLDoc avant l v0.3b du 25/05/2025)
+
+  C2PPCommentStartLine := -1;
+  C2PPCommentLastLine := -1;
+  C2PPCommentValid := false;
+  FirstFound := false;
 
   PrevSignature := '';
-  while (i < length(SourceFile)) and SourceFile[i].trim.startswith('///') do
+  i := 0;
+  BreakLoop := false;
+  while (i < length(SourceFile)) and (not BreakLoop) do
   begin
-    idx := SourceFile[i].IndexOf('Signature : ');
-    if (idx >= 0) then
-      PrevSignature := SourceFile[i].Substring(idx + 'Signature : '.length);
+    Line := SourceFile[i].Trim;
+
+    if Line.StartsWith('///') then
+      if (C2PPCommentStartLine < 0) and Line.Contains('<summary>') then
+      begin // First line of a XMLDoc comment
+        C2PPCommentStartLine := i;
+        C2PPCommentLastLine := -1;
+        C2PPCommentValid := false;
+        FirstFound := true;
+      end
+      else if (C2PPCommentStartLine >= 0) and Line.Contains('</summary>') then
+      begin // Last line of a XMLDoc comment
+        C2PPCommentLastLine := i;
+        BreakLoop := C2PPCommentValid or FirstFound;
+      end
+      else
+      begin // In a XMLDoc comment
+        idx := SourceFile[i].IndexOf('Signature : ');
+        if (idx >= 0) then
+        begin
+          PrevSignature := SourceFile[i].Substring(idx + 'Signature : '.length);
+          C2PPCommentValid := true;
+        end;
+      end
+    else if not Line.IsEmpty then
+      BreakLoop := true;
+
     inc(i);
   end;
 
-  while (i < length(SourceFile)) and SourceFile[i].trim.IsEmpty do
-    inc(i);
+  if (C2PPCommentStartLine > C2PPCommentLastLine) then
+    raise Exception.Create('Missing the end of a first comment in "' +
+      FileName + '".');
 
-  FirstSourceLineIndex := i;
+  if not C2PPCommentValid then
+  begin
+    C2PPCommentStartLine := -1;
+    C2PPCommentLastLine := -1;
+  end;
 
-  NewSignature := '';
   // => calculer la nouvelle signature une fois le bloc de commentaire en entête supprimé
-  for i := FirstSourceLineIndex to length(SourceFile) - 1 do
-    NewSignature := thashsha1.GetHashString(NewSignature + SourceFile[i]);
+  NewSignature := '';
+  for i := 0 to length(SourceFile) - 1 do
+    if ((i < C2PPCommentStartLine) or (i > C2PPCommentLastLine)) and
+      (not SourceFile[i].Trim.IsEmpty) then
+      NewSignature := thashsha1.GetHashString(NewSignature + SourceFile[i]);
 
   // => si la signature diffère, générer une nouvelle version du fichier avec son commentaire à jour
   if (NewSignature <> PrevSignature) or Force then
   begin
+    // => ajout de l'entête : copyright, timestamp et commentaires
     setlength(DestFile, 0);
-    AddTo(DestFile, '/// <summary>');
+    AddTo(DestFile, '(* C2PP');
     if (not CurrentProject.Copyright.IsEmpty) then
     begin
-      AddTo(DestFile, '/// ' + Space(75, '*'));
-      AddTo(DestFile, '///');
+      AddTo(DestFile, '  ' + Space(75, '*'));
+      AddTo(DestFile, '');
       AddStringsTo(DestFile, CurrentProject.Copyright);
-      AddTo(DestFile, '///');
+      AddTo(DestFile, '');
     end;
     if (not CurrentProject.Description.IsEmpty) then
     begin
-      AddTo(DestFile, '/// ' + Space(75, '*'));
-      AddTo(DestFile, '///');
+      AddTo(DestFile, '  ' + Space(75, '*'));
+      AddTo(DestFile, '');
       AddStringsTo(DestFile, CurrentProject.Description);
-      AddTo(DestFile, '///');
+      AddTo(DestFile, '');
     end;
     if (not CurrentProject.Author.IsEmpty) or
       (not CurrentProject.SiteURL.IsEmpty) or
       (not CurrentProject.ProjectURL.IsEmpty) then
     begin
-      AddTo(DestFile, '/// ' + Space(75, '*'));
+      AddTo(DestFile, '  ' + Space(75, '*'));
       if (not CurrentProject.Author.IsEmpty) then
       begin
-        AddTo(DestFile, '///');
-        AddTo(DestFile, '/// Author(s) :');
+        AddTo(DestFile, '');
+        AddTo(DestFile, '  Author(s) :');
         // TODO : traiter le cas de plusieurs ou un seul auteurs
-        AddTo(DestFile, '/// ' + CurrentProject.Author);
+        AddTo(DestFile, '  ' + CurrentProject.Author);
       end;
       if (not CurrentProject.SiteURL.IsEmpty) then
       begin
-        AddTo(DestFile, '///');
-        AddTo(DestFile, '/// Site :');
-        AddTo(DestFile, '/// ' + CurrentProject.SiteURL);
+        AddTo(DestFile, '');
+        AddTo(DestFile, '  Site :');
+        AddTo(DestFile, '  ' + CurrentProject.SiteURL);
       end;
       if (not CurrentProject.ProjectURL.IsEmpty) then
       begin
-        AddTo(DestFile, '///');
-        AddTo(DestFile, '/// Project site :');
-        AddTo(DestFile, '/// ' + CurrentProject.ProjectURL);
+        AddTo(DestFile, '');
+        AddTo(DestFile, '  Project site :');
+        AddTo(DestFile, '  ' + CurrentProject.ProjectURL);
       end;
-      AddTo(DestFile, '///');
+      AddTo(DestFile, '');
     end;
-    AddTo(DestFile, '/// ' + Space(75, '*'));
-    AddTo(DestFile, '/// File last update : ' +
+    AddTo(DestFile, '  ' + Space(75, '*'));
+    AddTo(DestFile, '  File last update : ' +
       DateToISO8601(LastWriteTime, false));
-    AddTo(DestFile, '/// Signature : ' + NewSignature);
-    AddTo(DestFile, '/// ' + Space(75, '*'));
-    AddTo(DestFile, '/// </summary>');
+    AddTo(DestFile, '  Signature : ' + NewSignature);
+    AddTo(DestFile, '  ' + Space(75, '*'));
+    AddTo(DestFile, '*)');
     AddTo(DestFile, '');
 
+    // => ajout du contenu du fichier d'origine (hors bloc de commentaire C2PP si trouvé)
     idx := length(DestFile);
-    setlength(DestFile, idx + length(SourceFile) - FirstSourceLineIndex);
-    for i := FirstSourceLineIndex to length(SourceFile) - 1 do
-    begin
-      DestFile[idx] := SourceFile[i];
-      inc(idx);
-    end;
+    FirstFound := false;
+    setlength(DestFile, idx + length(SourceFile));
+    for i := 0 to length(SourceFile) - 1 do
+      if ((i < C2PPCommentStartLine) or (i > C2PPCommentLastLine)) then
+      begin
+        if FirstFound or (not SourceFile[i].Trim.IsEmpty) then
+        begin
+          FirstFound := true;
+          DestFile[idx] := SourceFile[i];
+          inc(idx);
+        end;
+      end;
+    setlength(DestFile, idx);
 
     tfile.WriteAllLines(AFilePath, DestFile, Encoding);
 
@@ -556,7 +614,7 @@ begin
 
   // TODO : vérifier que le dossier n'est pas dans la liste des exclusions
 
-  if fld.startswith('.') or (fld = '_private') or (fld = '_prive') or
+  if fld.StartsWith('.') or (fld = '_private') or (fld = '_prive') or
     (fld = '__history') or (fld = '__recovery') or (fld = 'lib-externes') or
     (fld = 'lib-externe') then
     exit;
