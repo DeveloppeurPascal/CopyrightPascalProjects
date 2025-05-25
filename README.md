@@ -4,11 +4,15 @@
 
 This program is intended for Pascal language developers who wish to add a copyright and version comment to the header of their source files (*.pas, *.dpr, *.dpk, *.lpr, ...).
 
-The comments are placed at the beginning of the source file before the standard start of the file content. They are in [XML Documentation](https://docwiki.embarcadero.com/RADStudio/en/XML_Documentation_Comments) with a SUMMMARY tag containing the elements entered in the project: a description, a copyright, the list of authors, links to the code repository and to the project site (if specified).
+The comments are placed at the beginning of the source file before the standard start of the file content.
+
+These are Pascal comments using ‘(* ... *)’ as a marker. The first line or the following line must contain ‘C2PP’ to be handled by the program. A file signature must be present before the end of the comment.
+
+If the program does not find this type of comment, it will try to interpret the first XMLDoc comment and look for a signature as was used before 25 May 2025 in the first beta versions.
 
 These comments are supported by Delphi. They will not cause problems in other compilers, interpreters and editors.
 
-!!! MAKE BACKUPS BEFORE USING THIS PROJECT ON YOUR SOURCE CODES OR PROCESS YOUR COMMITS BEFORE UPDATING THE COMMENTS INFO!!!!
+!!! MAKE BACKUPS BEFORE USING THIS PROJECT ON YOUR SOURCE CODES OR PROCESS YOUR COMMITS BEFORE UPDATING THE COMMENTS INFO !!!!
 
 This code repository contains a project developed in Object Pascal language under Delphi. You don't know what Delphi is and where to download it ? You'll learn more [on this web site](https://delphi-resources.developpeur-pascal.fr/).
 

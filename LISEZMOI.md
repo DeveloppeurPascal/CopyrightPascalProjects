@@ -4,7 +4,11 @@
 
 Ce programme est destiné aux développeurs en langage Pascal désireux d'ajouter un commentaire de copyright et de version en entête de leurs fichiers sources (*.pas, *.dpr, *.dpk, *.lpr, ...).
 
-Les commentaires seront mis en début de fichier source avant le démarrage standard du contenu du fichier. Ils sont au format [XML Documentation](https://docwiki.embarcadero.com/RADStudio/fr/Commentaires_de_documentation_XML) avec tag SUMMMARY contenant les éléments saisis dans le projet : une description, un copyright, la liste des auteurs, les liens vers le dépôt de code et vers le site du projet (s'ils sont précisés).
+Les commentaires seront mis en début de fichier source avant le démarrage standard du contenu du fichier.
+
+Ce sont des commentaires Pascal utilisant "(* ... *)" comme marqueur. La première ligne ou la suivante doivent contenir "C2PP" pour être pris en charge par le programme. Une signature du fichier doit être présente avant la fin du commentaire.
+
+Si le programme ne trouve pas ce type de commentaire, il tentera d'interpréter le premier commentaire XMLDoc et y chercher une signature comme elle était utilisée avant le 25 mai 2025 dans les premières versions beta.
 
 Ces commentaires sont compatibles avec Delphi. Ils ne poseront pas de problème dans les autres compilateurs, interpréteurs et éditeurs.
 
