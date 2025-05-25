@@ -3,7 +3,7 @@
 ///
 /// Copyright Pascal Projects
 ///
-/// Copyright 2024 Patrick Prémartin under AGPL 3.0 license.
+/// Copyright 2024-2025 Patrick Prémartin under AGPL 3.0 license.
 ///
 /// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 /// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -33,8 +33,8 @@
 /// https://github.com/DeveloppeurPascal/CopyrightPascalProjects
 ///
 /// ***************************************************************************
-/// File last update : 2024-08-05T15:06:02.000+02:00
-/// Signature : f2e6dc0a979204cac70db2d20d8a174d4a3fae19
+/// File last update : 2025-05-25T10:23:42.000+02:00
+/// Signature : 8eb31116afb832e0887d13ce5200c0756d4c024b
 /// ***************************************************************************
 /// </summary>
 
@@ -74,7 +74,7 @@ type
     ToolBar1: TToolBar;
     btnProjectOpen: TButton;
     btnProjectClose: TButton;
-    btnProjectRun: TButton;
+    btnProjectRunOnUpdatedFiles: TButton;
     btnProjectNew: TButton;
     btnAbout: TButton;
     btnOptions: TButton;
@@ -88,7 +88,7 @@ type
     actProjectClose: TAction;
     actAbout: TAction;
     actOptions: TAction;
-    actProjectRun: TAction;
+    actProjectApplyOnChangedFiles: TAction;
     MainMenu1: TMainMenu;
     mnuMacOS: TMenuItem;
     mnuFile: TMenuItem;
@@ -98,7 +98,7 @@ type
     mnuFileClose: TMenuItem;
     mnuFileQuit: TMenuItem;
     mnuProject: TMenuItem;
-    mnuProjectRun: TMenuItem;
+    mnuProjectApplyOnChangedFiles: TMenuItem;
     mnuTools: TMenuItem;
     mnuToolsOptions: TMenuItem;
     mnuHelp: TMenuItem;
@@ -123,6 +123,9 @@ type
     lblAuthor: TLabel;
     edtAuthor: TEdit;
     mmoLog: TMemo;
+    btnProjectRunOnAllFiles: TButton;
+    actProjectApplyOnAllFiles: TAction;
+    mnuProjectApplyOnAllFiles: TMenuItem;
     procedure OlfAboutDialog1URLClick(const AURL: string);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -135,7 +138,7 @@ type
     procedure actProjectCloseExecute(Sender: TObject);
     procedure actAboutExecute(Sender: TObject);
     procedure actOptionsExecute(Sender: TObject);
-    procedure actProjectRunExecute(Sender: TObject);
+    procedure actProjectApplyOnChangedFilesExecute(Sender: TObject);
     procedure btnPascalProjectFolderSelectClick(Sender: TObject);
     procedure btnAuthorURLOpenClick(Sender: TObject);
     procedure btnSiteURLOpenClick(Sender: TObject);
@@ -145,14 +148,16 @@ type
     procedure edtAuthorChangeTracking(Sender: TObject);
     procedure edtProjectURLChangeTracking(Sender: TObject);
     procedure edtSiteURLChangeTracking(Sender: TObject);
+    procedure actProjectApplyOnAllFilesExecute(Sender: TObject);
   private
     FCurrentProject: TC2PPProject;
     procedure SetCurrentProject(const Value: TC2PPProject);
   protected
     procedure SubscribeToProjectChangedMessage;
     procedure InitMainMenuForMacOS;
-    procedure AddCommentsToFolder(const AFolder: string);
-    procedure AddCommentsToFile(const AFilePath: string);
+    procedure AddCommentsToFolder(const AFolder: string; const Force: Boolean);
+    procedure AddCommentsToFile(const AFilePath: string; const Force: Boolean);
+    procedure DoProjectApply(const Force: Boolean);
   public
     property CurrentProject: TC2PPProject read FCurrentProject
       write SetCurrentProject;
@@ -194,6 +199,11 @@ begin
   end;
 end;
 
+procedure TfrmMain.actProjectApplyOnAllFilesExecute(Sender: TObject);
+begin
+  DoProjectApply(true);
+end;
+
 procedure TfrmMain.actProjectCloseExecute(Sender: TObject);
 begin
   if assigned(CurrentProject) and CurrentProject.HasChanged then
@@ -226,57 +236,9 @@ begin
   end;
 end;
 
-procedure TfrmMain.actProjectRunExecute(Sender: TObject);
+procedure TfrmMain.actProjectApplyOnChangedFilesExecute(Sender: TObject);
 begin
-  if not assigned(CurrentProject) then
-    exit;
-
-  // Sur cette version, on exclut les dossiers :
-  // .*
-  // __history & __recovery (dossiers de Delphi)
-  // _PRIVATE ou _PRIVE (les fichiers non diffusés sur le dépôt de code)
-  // lib-externes et lib-externe (les sous-modules dans mes dépôts de code)
-
-  // Les extensions de fichiers prises en charge :
-  // *.pas
-  // *.dpr
-  // *.dpk
-  // *.lpr
-
-  // Parcours de l'arborescence sélectionnée pour le projet Pascal
-  // Pour chaque dossier, parcourrir les sous-dossier puis les fichiers
-  // Pour chaque fichier à traiter (non exclu, avec la bonne extension)
-  // => récupérer la date/heure de dernière moficiation du fichier
-  // => lire le fichier et récupérer la signature existante
-  // => calculer la nouvelle signature une fois le bloc de commentaire en entête supprimé
-  // => si la signature diffère, générer une nouvelle version du fichier avec son commentaire à jour
-
-  if CurrentProject.PascalProjectFolder.IsEmpty then
-    raise Exception.Create('Unknow Pascal project folder to run on !');
-
-  if not TDirectory.Exists(CurrentProject.PascalProjectFolder) then
-    raise Exception.Create('Current Pascal project folder doesn''t exist !');
-
-  // TODO : faire le traitement en batch pour ne pas bloquer l'écran pendant qu'il tourne
-
-  // TODO : proposer éventuellement d'enregistrer les données du projet ouvert
-  // TODO : ajouter une demande de confirmation d'écrasement des fichier de destination (rappel qu'il n'y a pas de retour en arrière sauf backup ou VCS pour Version Control System)
-
-  mmoLog.Visible := true; // TODO : à conditionner dans les options du programme
-  mmoLog.lines.clear;
-  mmoLog.BringToFront;
-
-  actProjectRun.Enabled := false;
-  try
-    lProject.Enabled := false;
-    try
-      AddCommentsToFolder(CurrentProject.PascalProjectFolder);
-    finally
-      lProject.Enabled := true;
-    end;
-  finally
-    actProjectRun.Enabled := true;
-  end;
+  DoProjectApply(false);
 end;
 
 procedure TfrmMain.actProjectNewExecute(Sender: TObject);
@@ -381,7 +343,8 @@ begin
   Close;
 end;
 
-procedure TfrmMain.AddCommentsToFile(const AFilePath: string);
+procedure TfrmMain.AddCommentsToFile(const AFilePath: string;
+const Force: Boolean);
   procedure AddTo(var Tab: TStringDynArray; const s: string);
   var
     idx: int64;
@@ -458,7 +421,7 @@ begin
     exit;
 
   // Pour les fichiers à traiter :
-  // => récupérer la date/heure de dernière moficiation du fichier
+  // => récupérer la date/heure de dernière modification du fichier
   LastWriteTime := tfile.GetLastWriteTime(AFilePath);
 
   // => lire le fichier
@@ -498,7 +461,7 @@ begin
     NewSignature := thashsha1.GetHashString(NewSignature + SourceFile[i]);
 
   // => si la signature diffère, générer une nouvelle version du fichier avec son commentaire à jour
-  if (NewSignature <> PrevSignature) then
+  if (NewSignature <> PrevSignature) or Force then
   begin
     setlength(DestFile, 0);
     AddTo(DestFile, '/// <summary>');
@@ -576,7 +539,8 @@ begin
   end;
 end;
 
-procedure TfrmMain.AddCommentsToFolder(const AFolder: string);
+procedure TfrmMain.AddCommentsToFolder(const AFolder: string;
+const Force: Boolean);
 var
   i: integer;
   Tab: TStringDynArray;
@@ -605,11 +569,11 @@ begin
 
   Tab := TDirectory.GetFiles(AFolder);
   for i := 0 to length(Tab) - 1 do
-    AddCommentsToFile(Tab[i]);
+    AddCommentsToFile(Tab[i], Force);
 
   Tab := TDirectory.GetDirectories(AFolder);
   for i := 0 to length(Tab) - 1 do
-    AddCommentsToFolder(Tab[i]);
+    AddCommentsToFolder(Tab[i], Force);
 end;
 
 procedure TfrmMain.btnAuthorURLOpenClick(Sender: TObject);
@@ -641,6 +605,65 @@ procedure TfrmMain.btnSiteURLOpenClick(Sender: TObject);
 begin
   if not edtSiteURL.Text.IsEmpty then
     url_Open_In_Browser(edtSiteURL.Text);
+end;
+
+procedure TfrmMain.DoProjectApply(const Force: Boolean);
+begin
+  if not assigned(CurrentProject) then
+    exit;
+
+  // Sur cette version, on exclut les dossiers :
+  // .*
+  // __history & __recovery (dossiers de Delphi)
+  // _PRIVATE ou _PRIVE (les fichiers non diffusés sur le dépôt de code)
+  // lib-externes et lib-externe (les sous-modules dans mes dépôts de code)
+
+  // Les extensions de fichiers prises en charge :
+  // *.pas
+  // *.dpr
+  // *.dpk
+  // *.lpr
+
+  // Parcours de l'arborescence sélectionnée pour le projet Pascal
+  // Pour chaque dossier, parcourrir les sous-dossier puis les fichiers
+  // Pour chaque fichier à traiter (non exclu, avec la bonne extension)
+  // => récupérer la date/heure de dernière moficiation du fichier
+  // => lire le fichier et récupérer la signature existante
+  // => calculer la nouvelle signature une fois le bloc de commentaire en entête supprimé
+  // => si la signature diffère, générer une nouvelle version du fichier avec son commentaire à jour
+
+  if CurrentProject.PascalProjectFolder.IsEmpty then
+    raise Exception.Create('Unknow Pascal project folder to run on !');
+
+  if not TDirectory.Exists(CurrentProject.PascalProjectFolder) then
+    raise Exception.Create('Current Pascal project folder doesn''t exist !');
+
+  // TODO : faire le traitement en batch pour ne pas bloquer l'écran pendant qu'il tourne
+
+  // TODO : proposer éventuellement d'enregistrer les données du projet ouvert
+  // TODO : ajouter une demande de confirmation d'écrasement des fichier de destination (rappel qu'il n'y a pas de retour en arrière sauf backup ou VCS pour Version Control System)
+
+  mmoLog.Visible := true; // TODO : à conditionner dans les options du programme
+  mmoLog.lines.clear;
+  mmoLog.BringToFront;
+
+  actProjectApplyOnChangedFiles.Enabled := false;
+  try
+    actProjectApplyOnAllFiles.Enabled := false;
+    try
+      lProject.Enabled := false;
+      try
+        AddCommentsToFolder(CurrentProject.PascalProjectFolder, Force);
+      finally
+        lProject.Enabled := true;
+      end;
+    finally
+      actProjectApplyOnAllFiles.Enabled := true;
+    end;
+  finally
+    actProjectApplyOnChangedFiles.Enabled := true;
+  end;
+
 end;
 
 procedure TfrmMain.edtAuthorChangeTracking(Sender: TObject);
@@ -788,7 +811,8 @@ begin
         btnProjectOpen.Visible := not assigned(CurrentProject);
         btnProjectNew.Visible := btnProjectOpen.Visible;
         btnProjectClose.Visible := not btnProjectOpen.Visible;
-        btnProjectRun.Visible := not btnProjectOpen.Visible;
+        btnProjectRunOnUpdatedFiles.Visible := not btnProjectOpen.Visible;
+        btnProjectRunOnAllFiles.Visible := not btnProjectOpen.Visible;
       end;
     end);
 end;

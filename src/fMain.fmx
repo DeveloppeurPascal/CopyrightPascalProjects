@@ -80,8 +80,8 @@ object frmMain: TfrmMain
       TabOrder = 3
       TextSettings.Trimming = None
     end
-    object btnProjectRun: TButton
-      Action = actProjectRun
+    object btnProjectRunOnUpdatedFiles: TButton
+      Action = actProjectApplyOnChangedFiles
       Align = Left
       ImageIndex = -1
       Margins.Left = 5.000000000000000000
@@ -90,10 +90,10 @@ object frmMain: TfrmMain
       Margins.Bottom = 5.000000000000000000
       Position.X = 275.000000000000000000
       Position.Y = 5.000000000000000000
-      Size.Width = 80.000000000000000000
+      Size.Width = 160.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 4
+      TabOrder = 5
       TextSettings.Trimming = None
     end
     object btnProjectNew: TButton
@@ -109,7 +109,7 @@ object frmMain: TfrmMain
       Size.Width = 80.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 5
+      TabOrder = 6
       TextSettings.Trimming = None
     end
     object btnAbout: TButton
@@ -125,7 +125,23 @@ object frmMain: TfrmMain
       Size.Width = 80.000000000000000000
       Size.Height = 30.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 6
+      TabOrder = 7
+      TextSettings.Trimming = None
+    end
+    object btnProjectRunOnAllFiles: TButton
+      Action = actProjectApplyOnAllFiles
+      Align = Left
+      ImageIndex = -1
+      Margins.Left = 5.000000000000000000
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 5.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 445.000000000000000000
+      Position.Y = 5.000000000000000000
+      Size.Width = 160.000000000000000000
+      Size.Height = 30.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 4
       TextSettings.Trimming = None
     end
   end
@@ -416,8 +432,13 @@ object frmMain: TfrmMain
     end
     object mnuProject: TMenuItem
       Text = '&Project'
-      object mnuProjectRun: TMenuItem
-        Action = actProjectRun
+      object mnuProjectApplyOnChangedFiles: TMenuItem
+        Action = actProjectApplyOnChangedFiles
+        Locked = True
+        ImageIndex = -1
+      end
+      object mnuProjectApplyOnAllFiles: TMenuItem
+        Action = actProjectApplyOnAllFiles
         Locked = True
         ImageIndex = -1
       end
@@ -507,9 +528,13 @@ object frmMain: TfrmMain
       Text = '&Options'
       OnExecute = actOptionsExecute
     end
-    object actProjectRun: TAction
-      Text = '&Run'
-      OnExecute = actProjectRunExecute
+    object actProjectApplyOnChangedFiles: TAction
+      Text = 'Apply on c&hanged files'
+      OnExecute = actProjectApplyOnChangedFilesExecute
+    end
+    object actProjectApplyOnAllFiles: TAction
+      Text = 'Apply on a&ll files'
+      OnExecute = actProjectApplyOnAllFilesExecute
     end
   end
 end
